@@ -1,0 +1,7 @@
+{
+ "type": "module",
+ "dependencies": {
+  "http": "^0.0.1-security",
+  "restify": "^11.1.0"
+ }
+}
