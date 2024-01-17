@@ -30,24 +30,8 @@ server.post('/foo',
 
 server.post('/table',
     function(req, res, next) {
-        console.log('foo')
+        console.log(`Got request:\n${req.header}`);
         const id = req.body.id;
-        /*let table = null;
-        for(let i = 0; i < data.length; i++)
-        {
-            if(data[i]['$id'] == id)
-            {
-                table = data[i]['Oracles'][0]['Table'];
-            }
-        }
-        const roll = Math.floor(Math.random()*table[table.length-1]['Ceiling'])+1
-        for(let i = 0; i < table.length; i++)
-        {
-            if(table[i]['Floor'] <= roll && table[i]['Ceiling'] >= roll)
-            {
-                req.result = table[i]['Result'];
-            }
-        }*/
         try
         {
             req.result = RollOnOracle(GetOracle(id));
