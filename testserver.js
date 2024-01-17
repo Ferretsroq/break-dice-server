@@ -4,7 +4,7 @@ function GetResult(payload)
 {
     const urlparams = {
         protocol: 'http:',
-        host: 'localhost',
+        host: '18.220.137.34',
         port: 8080,
         path: '/table',
         method: 'POST',

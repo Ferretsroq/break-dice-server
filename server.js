@@ -30,6 +30,7 @@ server.post('/foo',
 
 server.post('/table',
     function(req, res, next) {
+        console.log('foo')
         const id = req.body.id;
         /*let table = null;
         for(let i = 0; i < data.length; i++)
@@ -47,7 +48,14 @@ server.post('/table',
                 req.result = table[i]['Result'];
             }
         }*/
-        req.result = RollOnOracle(GetOracle(id));
+        try
+        {
+            req.result = RollOnOracle(GetOracle(id));
+        }
+        catch
+        {
+            req.result = 'Error'
+        }
         return next();
     },
     function(req, res, next) {
