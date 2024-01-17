@@ -30,9 +30,8 @@ server.post('/foo',
 
 server.post('/table',
     function(req, res, next) {
-        const roll = Math.floor(Math.random()*100)+1
         const id = req.body.id;
-        let table = null;
+        /*let table = null;
         for(let i = 0; i < data.length; i++)
         {
             if(data[i]['$id'] == id)
@@ -40,13 +39,15 @@ server.post('/table',
                 table = data[i]['Oracles'][0]['Table'];
             }
         }
+        const roll = Math.floor(Math.random()*table[table.length-1]['Ceiling'])+1
         for(let i = 0; i < table.length; i++)
         {
             if(table[i]['Floor'] <= roll && table[i]['Ceiling'] >= roll)
             {
                 req.result = table[i]['Result'];
             }
-        }
+        }*/
+        req.result = RollOnOracle(GetOracle(id));
         return next();
     },
     function(req, res, next) {
@@ -55,4 +56,64 @@ server.post('/table',
     }
 );
 
-const data = JSON.parse(fs.readFileSync('./data/Ironsworn_oracles.json', 'utf8'))
+let data = [];
+const files = fs.readdirSync('./data');
+for(let i = 0; i < files.length; i++)
+{
+    if(files[i].endsWith('.json'))
+    {
+        data = data.concat(JSON.parse(fs.readFileSync(`./data/${files[i]}`, 'utf8')));
+    }
+}
+//const data = JSON.parse(fs.readFileSync('./data/Ironsworn_oracles.json', 'utf8'))
+
+
+function GetOracle(id)
+{
+    const splitID = id.split('/');
+    let parentOracle = data.find(oracle => oracle['$id'].startsWith(`${splitID[0]}/${splitID[1]}/${splitID[2]}`));
+    let depth = 3;
+    for(let oracleIndex = 0; oracleIndex < parentOracle['Oracles'].length; oracleIndex++)
+    {
+        if(parentOracle['Oracles'][oracleIndex]['$id'] === id)
+        {
+            return parentOracle['Oracles'][oracleIndex]['Table'];
+        }
+    }
+    while(Object.keys(parentOracle).includes('Oracles'))
+    {
+        depth++;
+        let depthString = '';
+        for(let split = 0; split < depth; split++)
+        {
+            depthString += `${splitID[split]}/`;
+        }
+        depthString = depthString.slice(0,-1);
+        console.log(depthString);
+        parentOracle = parentOracle['Oracles'].find(oracle => oracle['$id'].startsWith(depthString));
+        for(let oracleIndex = 0; oracleIndex < parentOracle['Oracles'].length; oracleIndex++)
+        {
+            if(parentOracle['Oracles'][oracleIndex]['$id'] === id)
+            {
+                return parentOracle['Oracles'][oracleIndex]['Table'];
+            }
+        }
+    }
+}
+
+function RollOnOracle(oracle)
+{
+    let result = '⏵';
+    while(result.includes('⏵'))
+    {
+        const roll = Math.floor(Math.random()*oracle[oracle.length-1]['Ceiling'])+1
+        for(let i = 0; i < oracle.length; i++)
+        {
+            if(oracle[i]['Floor'] <= roll && oracle[i]['Ceiling'] >= roll)
+            {
+                return oracle[i]['Result'];
+            }
+        }
+    }
+    return '';
+}
