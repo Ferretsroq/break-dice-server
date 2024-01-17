@@ -103,9 +103,9 @@ function RollOnOracle(oracle)
         {
             if(oracle[i]['Floor'] <= roll && oracle[i]['Ceiling'] >= roll)
             {
-                return oracle[i]['Result'];
+                result =  oracle[i]['Result'];
             }
         }
     }
-    return '';
+    return result;
 }
