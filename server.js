@@ -30,7 +30,7 @@ server.post('/foo',
 
 server.post('/table',
     function(req, res, next) {
-        console.log(`Got request:\n${req.header}`);
+        console.log(`Got request:\n${req.getQuery()}`);
         const id = req.body.id;
         try
         {
