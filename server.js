@@ -30,7 +30,7 @@ server.post('/foo',
 
 server.post('/table',
     function(req, res, next) {
-        console.log(`Got request:\n${req.body.toString()}`);
+        console.log(`Got request:\n${JSON.stringify(req.body)}`);
         const id = req.body.id;
         try
         {
